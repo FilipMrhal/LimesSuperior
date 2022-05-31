@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NekRMye8WCLmi5E+CsJMfd5mY9x+bHzFwKXp0TxRxNjfx9Nn/CqX9UASrQRTQSLU2SJZSv4+32BRoaua2v/Vxg==",
+  "dgSpecHash": "R0F+ft7Z+DzIdptUbS1AydRJZrsveieDDhUd4+7VEaIzY9KCGbhrKlHVPCpUyny5V71kr7/W/3aHaOArzK1Enw==",
   "success": true,
-  "projectFilePath": "/home/filip/Bielefeld/LimesSuperiorInC/LimesSuperiorInC.csproj",
+  "projectFilePath": "/home/filip/RiderProjects/LimesSuperior/LimesSuperiorInC.csproj",
   "expectedPackageFiles": [
     "/home/filip/.nuget/packages/mathnet.numerics/5.0.0/mathnet.numerics.5.0.0.nupkg.sha512"
   ],
