@@ -1,6 +1,8 @@
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Numerics;
 using MathNet.Numerics;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using MathNet.Numerics.Random;
 
 public class LimSup
@@ -29,16 +31,16 @@ public class LimSup
 
     private static readonly Random _rand = new Mrg32k3a();
 
-    private static readonly Vector2[] KArray = new[] { new Vector2((float) _rand.NextDouble(), (float) _rand.NextDouble()) };
+    private readonly Vector2[] KArray = new[] { new Vector2((float) _rand.NextDouble(), (float) _rand.NextDouble()) };
 
-    internal static void GetFirstColumnOfTheMatrix()
+    internal void GetFirstColumnOfTheMatrix()
     {
         Complex32 t11;
         Complex32 t21;
         Complex32 t31;
         Complex32 t41;
-        int x = 0;
-        int y = 0;
+        var x = 0;
+        var y = 0;
         for (var i = 0; i < Rho1.Length; i++)
             if (Rho1[i] == 1)
             {
@@ -61,7 +63,7 @@ public class LimSup
             coordinates[i] = new Vector2((float) (coordinates[i].X >= 13 ? coordinates[i].X - 13 + (1 + Math.Sqrt(13)) / 2 : coordinates[i].X),
                 (float) (coordinates[i].Y >= 13 ? coordinates[i].Y - 13 + (1 + Math.Sqrt(13)) / 2 : coordinates[i].Y));
         t21 = GetSumForIndex(coordinates.ToArray());
-        
+
         coordinates = new List<Vector2>();
         for (var i = 0; i < Rho1.Length; i++)
         {
@@ -76,7 +78,7 @@ public class LimSup
             coordinates[i] = new Vector2((float) (coordinates[i].X >= 13 ? coordinates[i].X - 13 + (1 + Math.Sqrt(13)) / 2 : coordinates[i].X),
                 (float) (coordinates[i].Y >= 13 ? coordinates[i].Y - 13 + (1 + Math.Sqrt(13)) / 2 : coordinates[i].Y));
         t31 = GetSumForIndex(coordinates.ToArray());
-        
+
         coordinates = new List<Vector2>();
         for (var i = 0; i < Rho1.Length; i++)
         {
@@ -92,14 +94,15 @@ public class LimSup
                 (float) (coordinates[i].Y >= 13 ? coordinates[i].Y - 13 + (1 + Math.Sqrt(13)) / 2 : coordinates[i].Y));
         t41 = GetSumForIndex(coordinates.ToArray());
 
+
     }
 
-    private static Complex32 GetSumForIndex(Vector2[] positions) =>
+    private Complex32 GetSumForIndex(Vector2[] positions) =>
         positions.Aggregate<Vector2, Complex32>(0, (current, position) => current + Complex32.Exp((Complex32) (2 * Math.PI * Complex.ImaginaryOne) * (position.X * KArray[0].X + position.Y * KArray[0].Y)));
 
-    private static void GetCoordinatesBasedOnIndexInRho1(int index, ref int x, ref int y)
+    private void GetCoordinatesBasedOnIndexInRho1(int index, ref int x, ref int y)
     {
-        int i = 0;
+        var i = 0;
         while (i < index)
         {
             AddObjectToVerificationArray(Rho1[i], ref x, y);
@@ -111,10 +114,9 @@ public class LimSup
         CleanUp();
     }
 
+    private void Swap(int[] str, int i, int j) => (str[i], str[j]) = (str[j], str[i]);
 
-    private static void Swap(int[] str, int i, int j) => (str[i], str[j]) = (str[j], str[i]);
-
-    private static void Reverse(int[] str, int l, int h)
+    private void Reverse(int[] str, int l, int h)
     {
         while (l < h)
         {
@@ -124,35 +126,48 @@ public class LimSup
         }
     }
 
-    private static int FindCeil(int[] str, int first, int l, int h)
+    private int FindCeil(int[] str, int first, int l, int h)
     {
-        int ceilIndex = l;
-        for (int i = l + 1; i <= h; i++)
+        var ceilIndex = l;
+        for (var i = l + 1; i <= h; i++)
             if (str[i] > first && str[i] < str[ceilIndex])
                 ceilIndex = i;
 
         return ceilIndex;
     }
 
-    public static void SortedPermutations(int[] str)
+    private readonly Dictionary<Permutation, bool> _permutations = new();
+
+    public void SortedPermutations(int[] str)
     {
+        var stop = new Stopwatch();
+        stop.Start();
         // Get size of string
-        int size = str.Length;
+        var size = str.Length;
         long incorrectCount = 0;
         long correctCount = 0;
 
         //Array.Sort(str);
 
-        bool isFinished = false;
+        var isFinished = false;
         while (!isFinished)
         {
-            if (Verify(str))
-                //Console.WriteLine(string.Join(',', str));
+            var newArray = Replace(str);
+            if (!_permutations.ContainsKey(newArray))
+            {
+                _permutations.Add(newArray, false);
                 correctCount++;
+                Console.WriteLine($"Correct: {correctCount}, Incorrect: {incorrectCount}");
+            }
             else
+            {
                 incorrectCount++;
-
-            Console.WriteLine($"Correct: {correctCount}, Incorrect: {incorrectCount}");
+            }
+            // if (Verify(str))
+            //     //Console.WriteLine(string.Join(',', str));
+            //     correctCount++;
+            // else
+            //     incorrectCount++;
 
             int i;
             for (i = size - 2; i >= 0; --i)
@@ -163,19 +178,21 @@ public class LimSup
                 isFinished = true;
             else
             {
-                int ceilIndex = FindCeil(str, str[i], i + 1, size - 1);
+                var ceilIndex = FindCeil(str, str[i], i + 1, size - 1);
                 Swap(str, i, ceilIndex);
                 Reverse(str, i + 1, size - 1);
             }
         }
+        stop.Stop();
+        Console.WriteLine(stop.Elapsed.TotalMinutes);
         Console.WriteLine(correctCount);
         Console.WriteLine(incorrectCount);
     }
 
-    private static bool[,] _verification = new bool[LAMBDA + 3, LAMBDA + 3];
-    private static bool[,] _verificationRho2 = new bool[LAMBDA, LAMBDA + 3];
+    private bool[,] _verification = new bool[LAMBDA + 3, LAMBDA + 3];
+    private bool[,] _verificationRho2 = new bool[LAMBDA, LAMBDA + 3];
 
-    internal static bool Verify(int[] str)
+    private bool Verify(int[] str)
     {
         CleanUp();
         var x = 0;
@@ -191,25 +208,41 @@ public class LimSup
         return true;
     }
 
-    private static int GetLowestAvailableY()
+    private Permutation Replace(int[] toReplace) =>
+        new(toReplace.Select(x =>
+        {
+            return x switch
+            {
+                1 => 1,
+                2 => 2,
+                5 => 2,
+                6 => 2,
+                3 => 3,
+                7 => 3,
+                8 => 3,
+                _ => 4
+            };
+        }).ToArray());
+
+    private int GetLowestAvailableY()
     {
         for (var i = 0; i <= _verification.GetUpperBound(0); i++)
-        for (int j = 0; j <= _verification.GetUpperBound(0); j++)
+        for (var j = 0; j <= _verification.GetUpperBound(0); j++)
             if (_verification[j, i] == false)
                 return i;
         return -1;
     }
 
-    private static int GetNextAvailableX()
+    private int GetNextAvailableX()
     {
         for (var i = 0; i <= _verification.GetUpperBound(0); i++)
-        for (int j = 0; j <= _verification.GetUpperBound(0); j++)
+        for (var j = 0; j <= _verification.GetUpperBound(0); j++)
             if (_verification[j, i] == false)
                 return j;
         return -1;
     }
 
-    private static bool AddObjectToVerificationArray(int objectId, ref int x, int y)
+    private bool AddObjectToVerificationArray(int objectId, ref int x, int y)
     {
         switch (objectId)
         {
@@ -242,8 +275,8 @@ public class LimSup
             default: return false;
         }
     }
-    
-    private static bool AddObjectToVerificationArrayRho2(int objectId, ref int x, int y)
+
+    private bool AddObjectToVerificationArrayRho2(int objectId, ref int x, int y)
     {
         switch (objectId)
         {
@@ -277,7 +310,7 @@ public class LimSup
         }
     }
 
-    private static bool IsCorrect(int xFrom, int xTo, int yFrom, int yTo)
+    private bool IsCorrect(int xFrom, int xTo, int yFrom, int yTo)
     {
         for (var i = xFrom; i < xTo; i++)
         for (var j = yFrom; j < yTo; j++)
@@ -286,19 +319,49 @@ public class LimSup
         return true;
     }
 
-    private static void SetValues(int xFrom, int xTo, int yFrom, int yTo)
+    private void SetValues(int xFrom, int xTo, int yFrom, int yTo)
     {
         for (var i = xFrom; i < xTo; i++)
         for (var j = yFrom; j < yTo; j++)
             _verification[i, j] = true;
     }
 
-    private static void CleanUp()
+    private void CleanUp()
     {
         for (var i = 0; i <= _verification.GetUpperBound(0); i++)
         for (var j = 0; j <= _verification.GetUpperBound(0); j++)
             _verification[i, j] = false;
     }
+}
 
+public class Permutation : IEquatable<Permutation>
+{
+    public readonly int[] _perm;
 
+    public Permutation(int[] perm)
+    {
+        _perm = perm;
+    }
+
+    public bool Equals(Permutation other)
+    {
+        if (ReferenceEquals(null, other))
+            return false;
+        if (ReferenceEquals(this, other))
+            return true;
+        return _perm.SequenceEqual(other._perm);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj))
+            return false;
+        if (ReferenceEquals(this, obj))
+            return true;
+        if (obj.GetType() != this.GetType())
+            return false;
+        return Equals((Permutation) obj);
+    }
+
+    public override int GetHashCode() => _perm != null ? _perm.Sum() : 0;
 }

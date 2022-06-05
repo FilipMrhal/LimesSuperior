@@ -1,8 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LimesSuperiorInC", "LimesSuperiorInC.csproj", "{FF245328-92F2-47B6-A0D0-CFDBDEEF0AD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LimesSuperiorInC", "LimSup\LimesSuperiorInC.csproj", "{FF245328-92F2-47B6-A0D0-CFDBDEEF0AD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\LimesSuperior\Tests\Tests\Tests.csproj", "{8535A60F-E306-4F05-BF73-1DCBF782D078}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PermutationsWithRepetition", "PermutationsWithRepetition\PermutationsWithRepetition.csproj", "{B7BE50D7-9EDE-4A24-A9E4-FE48A1935657}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WithTree", "WithTree\WithTree\WithTree.csproj", "{E19863B4-54C0-48CA-8CB6-2C44BC583292}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +16,13 @@ Global
 		{FF245328-92F2-47B6-A0D0-CFDBDEEF0AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF245328-92F2-47B6-A0D0-CFDBDEEF0AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF245328-92F2-47B6-A0D0-CFDBDEEF0AD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8535A60F-E306-4F05-BF73-1DCBF782D078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8535A60F-E306-4F05-BF73-1DCBF782D078}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8535A60F-E306-4F05-BF73-1DCBF782D078}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8535A60F-E306-4F05-BF73-1DCBF782D078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7BE50D7-9EDE-4A24-A9E4-FE48A1935657}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7BE50D7-9EDE-4A24-A9E4-FE48A1935657}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7BE50D7-9EDE-4A24-A9E4-FE48A1935657}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7BE50D7-9EDE-4A24-A9E4-FE48A1935657}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E19863B4-54C0-48CA-8CB6-2C44BC583292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E19863B4-54C0-48CA-8CB6-2C44BC583292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E19863B4-54C0-48CA-8CB6-2C44BC583292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E19863B4-54C0-48CA-8CB6-2C44BC583292}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
